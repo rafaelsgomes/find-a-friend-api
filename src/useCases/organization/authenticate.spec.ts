@@ -2,7 +2,7 @@ import { describe, expect, it, beforeEach } from 'vitest'
 import { AuthenticateOrganizationUseCase } from './authenticate'
 import { hash } from 'bcryptjs'
 import { InMemoryOrganizationRepository } from '@/repositories/inMemory/inMemoryOrganizationRepository'
-import { InvalidCredentialsError } from './errors/invalidCredentialsError'
+import { InvalidCredentialsError } from '@/useCases/errors/invalidCredentialsError'
 
 let repository: InMemoryOrganizationRepository
 let sut: AuthenticateOrganizationUseCase

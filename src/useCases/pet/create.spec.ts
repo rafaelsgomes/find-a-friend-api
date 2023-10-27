@@ -3,7 +3,7 @@ import { CreatePetUseCase } from './create'
 import { hash } from 'bcryptjs'
 import { InMemoryPetRepository } from '@/repositories/inMemory/inMemoryPetRepository'
 import { InMemoryOrganizationRepository } from '@/repositories/inMemory/inMemoryOrganizationRepository'
-import { OrganizationNotFoundError } from './errors/organizationNotFoundError'
+import { OrganizationNotFoundError } from '@/useCases/errors/organizationNotFoundError'
 
 let repository: InMemoryPetRepository
 let organizationsRepository: InMemoryOrganizationRepository

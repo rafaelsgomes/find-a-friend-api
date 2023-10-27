@@ -1,7 +1,7 @@
 import { IOrganizationsRepository } from '@/repositories/IOrganizationsRepository'
 import { Organization } from '@prisma/client'
 import { compare } from 'bcryptjs'
-import { InvalidCredentialsError } from './errors/invalidCredentialsError'
+import { InvalidCredentialsError } from '@/useCases/errors/invalidCredentialsError'
 
 interface AuthenticateOrganizationRequest {
   email: string

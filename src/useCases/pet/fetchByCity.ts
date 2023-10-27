@@ -1,7 +1,7 @@
 import { IOrganizationsRepository } from '@/repositories/IOrganizationsRepository'
 import { IPetsRepository } from '@/repositories/IPetsRepository'
 import { Pet } from '@prisma/client'
-import { OrganizationNotFoundError } from './errors/organizationNotFoundError'
+import { OrganizationNotFoundError } from '@/useCases/errors/organizationNotFoundError'
 
 interface FetchByCityPetRequest {
   city: string
