@@ -4,6 +4,7 @@ import { hash } from 'bcryptjs'
 import { InMemoryPetRepository } from '@/repositories/inMemory/inMemoryPetRepository'
 import { InMemoryOrganizationRepository } from '@/repositories/inMemory/inMemoryOrganizationRepository'
 import { OrganizationNotFoundError } from '@/useCases/errors/organizationNotFoundError'
+import { PetNotFoundError } from '@/useCases/errors/petNotFoundError'
 
 let repository: InMemoryPetRepository
 let organizationsRepository: InMemoryOrganizationRepository
@@ -52,5 +53,22 @@ describe('Fetch By City Pet Use Case', () => {
     expect(async () => {
       await sut.execute({ city: 'Wrong city' })
     }).rejects.toBeInstanceOf(OrganizationNotFoundError)
+  })
+
+  it('Should not be able to search for pets by city name when there are no registered pets in the city', async () => {
+    await organizationsRepository.create({
+      person_responsible: 'John Doe',
+      email: 'johndoe@example.com',
+      password_hash: await hash('123456', 6),
+      address: 'Some address',
+      phone: '1199999999',
+      zip_code: '15789-458',
+      city: 'Some City',
+      state: 'SP',
+    })
+
+    expect(async () => {
+      await sut.execute({ city: 'Some City' })
+    }).rejects.toBeInstanceOf(PetNotFoundError)
   })
 })

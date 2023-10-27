@@ -2,6 +2,7 @@ import { IOrganizationsRepository } from '@/repositories/IOrganizationsRepositor
 import { IPetsRepository } from '@/repositories/IPetsRepository'
 import { Pet } from '@prisma/client'
 import { OrganizationNotFoundError } from '@/useCases/errors/organizationNotFoundError'
+import { PetNotFoundError } from '../errors/petNotFoundError'
 
 interface FetchByCityPetRequest {
   city: string
@@ -30,6 +31,10 @@ export class FetchByCityPetUseCase {
     const ids = organizations.map((item) => item.id)
 
     const pets = await this.petsRepository.findManyByOrganizationIds(ids)
+
+    if (pets.length < 1) {
+      throw new PetNotFoundError()
+    }
 
     return {
       pets,

@@ -12,7 +12,7 @@ describe('Create Organization Use Case', () => {
     repository = new InMemoryOrganizationRepository()
     sut = new AuthenticateOrganizationUseCase(repository)
   })
-  it('Should be able to create a new organization', async () => {
+  it('Should be able to authenticate a organization', async () => {
     await repository.create({
       person_responsible: 'John Doe',
       email: 'johndoe@example.com',
