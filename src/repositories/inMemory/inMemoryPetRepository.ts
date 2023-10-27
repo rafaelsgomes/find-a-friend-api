@@ -15,6 +15,7 @@ export class InMemoryPetRepository implements IPetsRepository {
     size,
     requirements,
     photos,
+    adopted_at,
   }: Prisma.PetUncheckedCreateInput) {
     const pet = {
       id: randomUUID(),
@@ -30,7 +31,7 @@ export class InMemoryPetRepository implements IPetsRepository {
       photos: photos as string[],
       created_at: new Date(),
       updated_at: new Date(),
-      adopted_at: null,
+      adopted_at: adopted_at ? new Date() : null,
     }
 
     this.items.push(pet)
@@ -40,10 +41,6 @@ export class InMemoryPetRepository implements IPetsRepository {
 
   async findManyByOrganizationIds(ids: string[]) {
     const pets = this.items.filter((item) => ids.includes(item.organization_id))
-
-    if (pets.length < 1) {
-      return null
-    }
 
     return pets
   }
@@ -62,10 +59,6 @@ export class InMemoryPetRepository implements IPetsRepository {
         pet.level_of_independence === level_of_independence
       )
     })
-
-    if (pets.length < 1) {
-      return null
-    }
 
     return pets
   }

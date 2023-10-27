@@ -46,13 +46,9 @@ export class InMemoryOrganizationRepository
   }
 
   async findManyByCity(city: string) {
-    const organizations = this.items.filter((item) => item.city === city)
-
-    if (organizations.length < 1) {
-      return null
-    }
-
-    return organizations
+    return this.items.filter((item) =>
+      item.city.toLocaleLowerCase().includes(city.toLocaleLowerCase()),
+    )
   }
 
   async findById(id: string) {
