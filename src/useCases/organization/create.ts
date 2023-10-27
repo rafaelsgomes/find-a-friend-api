@@ -1,13 +1,15 @@
 import { IOrganizationsRepository } from '@/repositories/IOrganizationsRepository'
-import { Organization } from '@prisma/client'
+import { Organization, State } from '@prisma/client'
 import { hash } from 'bcryptjs'
 import { OrganizationAlreadyExistsError } from './errors/organizationAlreadyExistsError'
 
 interface CreateOrganizationRequest {
-  person_responsible: string
+  name: string
   email: string
-  zip_code: string
+  cep: string
   address: string
+  city: string
+  state: State
   phone: string
   password: string
 }
@@ -22,9 +24,11 @@ export class CreateOrganizationUseCase {
     address,
     email,
     password,
-    person_responsible,
+    name,
     phone,
-    zip_code,
+    cep,
+    city,
+    state,
   }: CreateOrganizationRequest): Promise<CreateOrganizationResponse> {
     const organizationAlreadyExists =
       await this.organizationsRepository.findByEmail(email)
@@ -39,9 +43,11 @@ export class CreateOrganizationUseCase {
       address,
       email,
       password_hash,
-      person_responsible,
+      person_responsible: name,
       phone,
-      zip_code,
+      zip_code: cep,
+      city,
+      state,
     })
 
     return {

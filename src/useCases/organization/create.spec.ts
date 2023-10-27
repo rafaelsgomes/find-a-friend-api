@@ -14,12 +14,14 @@ describe('Create Organization Use Case', () => {
   })
   it('Should be able to create a new organization', async () => {
     const { organization } = await sut.execute({
-      person_responsible: 'John Doe',
+      name: 'John Doe',
       email: 'johndoe@example.com',
       password: '123456',
       address: 'Some address',
       phone: '1199999999',
-      zip_code: '15789-458',
+      cep: '15789-458',
+      city: 'Some city',
+      state: 'SP',
     })
 
     expect(organization.id).toEqual(expect.any(String))
@@ -28,12 +30,14 @@ describe('Create Organization Use Case', () => {
 
   it('Should hash organization password upon registration', async () => {
     const { organization } = await sut.execute({
-      person_responsible: 'John Doe',
+      name: 'John Doe',
       email: 'johndoe@example.com',
       password: '123456',
       address: 'Some address',
       phone: '1199999999',
-      zip_code: '15789-458',
+      cep: '15789-458',
+      city: 'Some city',
+      state: 'SP',
     })
 
     const isPasswordCorrectlyHashed = await compare(
@@ -45,19 +49,28 @@ describe('Create Organization Use Case', () => {
   })
 
   it('Should not be able to register with same email twice', async () => {
-    const organization = {
-      person_responsible: 'John Doe',
+    await sut.execute({
+      name: 'John Doe',
       email: 'johndoe@example.com',
       password: '123456',
       address: 'Some address',
       phone: '1199999999',
-      zip_code: '15789-458',
-    }
+      cep: '15789-458',
+      city: 'Some city',
+      state: 'SP',
+    })
 
-    await sut.execute(organization)
-
-    await expect(() => sut.execute(organization)).rejects.toBeInstanceOf(
-      OrganizationAlreadyExistsError,
-    )
+    await expect(() =>
+      sut.execute({
+        name: 'John Doe',
+        email: 'johndoe@example.com',
+        password: '123456',
+        address: 'Some address',
+        phone: '1199999999',
+        cep: '15789-458',
+        city: 'Some city',
+        state: 'SP',
+      }),
+    ).rejects.toBeInstanceOf(OrganizationAlreadyExistsError)
   })
 })

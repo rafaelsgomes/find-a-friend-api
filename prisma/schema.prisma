@@ -10,14 +10,99 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum State {
+  AC
+  AL
+  AP
+  AM
+  BA
+  CE
+  DF
+  ES
+  GO
+  MA
+  MT
+  MS
+  MG
+  PA
+  PB
+  PR
+  PE
+  PI
+  RJ
+  RN
+  RS
+  RO
+  RR
+  SC
+  SP
+  SE
+  TO
+}
+
 model Organization {
-  id                 String @id @default(uuid())
+  id                 String   @id @default(uuid())
   person_responsible String
   email              String
   zip_code           String
   address            String
+  city               String
+  state              State
   phone              String
   password_hash      String
+  created_at         DateTime @default(now())
+  updated_at         DateTime @default(now())
+  Pet                Pet[]
 
   @@map("organizations")
 }
+
+enum Age {
+  PUPPY
+  ADULT
+  ELDERLY
+}
+
+enum Size {
+  SMALL
+  MEDIUM
+  BIG
+}
+
+enum Level {
+  VERY_LOW
+  LOW
+  AVERAGE
+  HIGH
+  VERY_HIGH
+}
+
+model Pet {
+  id                    String       @id @default(uuid())
+  name                  String
+  description           String
+  age                   Age
+  size                  Size
+  energy_level          Level
+  level_of_independence Level
+  ambient               Size
+  adopted_at            DateTime?
+  requirements          String[]
+  created_at            DateTime     @default(now())
+  updated_at            DateTime     @default(now())
+  organization          Organization @relation(fields: [organization_id], references: [id])
+  organization_id       String
+  photos                String[]
+  // Photos                Photos[]
+
+  @@map("pets")
+}
+
+// model Photos {
+//   id     String @id @default(cuid())
+//   url    String
+//   pet    Pet    @relation(fields: [pet_id], references: [id])
+//   pet_id String
+
+//   @@map("photos")
+// }

@@ -20,6 +20,8 @@ describe('Create Organization Use Case', () => {
       address: 'Some address',
       phone: '1199999999',
       zip_code: '15789-458',
+      city: 'Some city',
+      state: 'SP',
     })
 
     const { organization } = await sut.execute({
@@ -48,6 +50,8 @@ describe('Create Organization Use Case', () => {
       address: 'Some address',
       phone: '1199999999',
       zip_code: '15789-458',
+      city: 'Some city',
+      state: 'SP',
     })
 
     await expect(() =>

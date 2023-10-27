@@ -13,6 +13,8 @@ export class InMemoryOrganizationRepository
     person_responsible,
     phone,
     zip_code,
+    city,
+    state,
   }: Prisma.OrganizationCreateInput) {
     const organization = {
       id: randomUUID(),
@@ -22,6 +24,10 @@ export class InMemoryOrganizationRepository
       address,
       phone,
       password_hash,
+      city,
+      state,
+      created_at: new Date(),
+      updated_at: new Date(),
     }
 
     this.items.push(organization)
@@ -31,6 +37,26 @@ export class InMemoryOrganizationRepository
 
   async findByEmail(email: string) {
     const organization = this.items.find((item) => item.email === email)
+
+    if (!organization) {
+      return null
+    }
+
+    return organization
+  }
+
+  async findManyByCity(city: string) {
+    const organizations = this.items.filter((item) => item.city === city)
+
+    if (organizations.length < 1) {
+      return null
+    }
+
+    return organizations
+  }
+
+  async findById(id: string) {
+    const organization = this.items.find((item) => item.id === id)
 
     if (!organization) {
       return null
