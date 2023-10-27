@@ -14,7 +14,7 @@ model Organization {
   id                 String @id @default(uuid())
   person_responsible String
   email              String
-  zip_code           Int
+  zip_code           String
   address            String
   phone              String
   password_hash      String
