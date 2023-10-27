@@ -2,7 +2,7 @@ import { describe, expect, it, beforeEach } from 'vitest'
 import { CreateOrganizationUseCase } from './create'
 import { compare } from 'bcryptjs'
 import { InMemoryOrganizationRepository } from '@/repositories/inMemory/inMemoryOrganizationRepository'
-import { OrganizationAlreadyExistsError } from '@/useCases/organization/errors/organizationAlreadyExistsError'
+import { OrganizationAlreadyExistsError } from './errors/organizationAlreadyExistsError'
 
 let repository: InMemoryOrganizationRepository
 let sut: CreateOrganizationUseCase
