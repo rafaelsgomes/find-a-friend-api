@@ -16,7 +16,7 @@ describe('Fetch By City Pet Use Case', () => {
     organizationsRepository = new InMemoryOrganizationRepository()
     sut = new FetchByCityPetUseCase(organizationsRepository, repository)
   })
-  it('Should be able to fetch pets by city name', async () => {
+  it('Should be able to fetch pets available by city name', async () => {
     const organization = await organizationsRepository.create({
       person_responsible: 'John Doe',
       email: 'johndoe@example.com',
@@ -40,6 +40,22 @@ describe('Fetch By City Pet Use Case', () => {
         photos: ['SomePhoto.com'],
         requirements: ['Some requirement'],
         size: 'MEDIUM',
+      })
+    }
+
+    for (let i = 1; i <= 3; i++) {
+      await repository.create({
+        age: 'PUPPY',
+        ambient: 'MEDIUM',
+        description: 'Some description',
+        energy_level: 'AVERAGE',
+        level_of_independence: 'AVERAGE',
+        name: `Some Name ${i}`,
+        organization_id: organization.id,
+        photos: ['SomePhoto.com'],
+        requirements: ['Some requirement'],
+        size: 'MEDIUM',
+        adopted_at: new Date(),
       })
     }
 

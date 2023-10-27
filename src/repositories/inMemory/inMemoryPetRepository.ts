@@ -40,7 +40,9 @@ export class InMemoryPetRepository implements IPetsRepository {
   }
 
   async findManyByOrganizationIds(ids: string[]) {
-    const pets = this.items.filter((item) => ids.includes(item.organization_id))
+    const pets = this.items.filter(
+      (item) => ids.includes(item.organization_id) && !item.adopted_at,
+    )
 
     return pets
   }
@@ -50,16 +52,30 @@ export class InMemoryPetRepository implements IPetsRepository {
     energy_level,
     level_of_independence,
     size,
+    organizationIds,
   }: IPetFindParams) {
-    const pets = this.items.filter((pet) => {
+    const petsFiltered = this.items.filter((item) => {
+      return organizationIds.includes(item.organization_id)
+    })
+    const pets = petsFiltered.filter((item) => {
       return (
-        pet.age === age ||
-        pet.energy_level === energy_level ||
-        pet.size === size ||
-        pet.level_of_independence === level_of_independence
+        item.age === age ||
+        item.energy_level === energy_level ||
+        item.size === size ||
+        item.level_of_independence === level_of_independence
       )
     })
 
     return pets
+  }
+
+  async findById(id: string) {
+    const pet = this.items.find((item) => item.id === id)
+
+    if (!pet) {
+      return null
+    }
+
+    return pet
   }
 }
