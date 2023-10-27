@@ -1,7 +1,7 @@
-import { IOrganizationsRepository } from "@/repositories/IOrganizationsRepository";
-import { Organization } from "@prisma/client";
+import { IOrganizationsRepository } from '@/repositories/IOrganizationsRepository'
+import { Organization } from '@prisma/client'
 import { hash } from 'bcryptjs'
-import { OrganizationAlreadyExistsError } from "./errors/organizationAlreadyExistsError";
+import { OrganizationAlreadyExistsError } from './errors/organizationAlreadyExistsError'
 
 interface CreateOrganizationRequest {
   person_responsible: string
@@ -18,10 +18,18 @@ interface CreateOrganizationResponse {
 
 export class CreateOrganizationUseCase {
   constructor(private organizationsRepository: IOrganizationsRepository) {}
-  async execute({address, email, password, person_responsible, phone, zip_code}: CreateOrganizationRequest): Promise<CreateOrganizationResponse>{
-    const organizationAlreadyExists = await this.organizationsRepository.findByNameAndFullAddress(person_responsible, address, zip_code)
+  async execute({
+    address,
+    email,
+    password,
+    person_responsible,
+    phone,
+    zip_code,
+  }: CreateOrganizationRequest): Promise<CreateOrganizationResponse> {
+    const organizationAlreadyExists =
+      await this.organizationsRepository.findByEmail(email)
 
-    if(organizationAlreadyExists) {
+    if (organizationAlreadyExists) {
       throw new OrganizationAlreadyExistsError()
     }
 
@@ -33,12 +41,11 @@ export class CreateOrganizationUseCase {
       password_hash,
       person_responsible,
       phone,
-      zip_code
+      zip_code,
     })
 
     return {
-      organization
+      organization,
     }
   }
 }
-
