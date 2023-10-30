@@ -1,0 +1,96 @@
+import { describe, expect, it, beforeEach } from 'vitest'
+import { FetchByCharacteristicsPetUseCase } from './fetchByCharacteristicsPet'
+import { hash } from 'bcryptjs'
+import { InMemoryPetRepository } from '@/repositories/inMemory/inMemoryPetRepository'
+import { InMemoryOrganizationRepository } from '@/repositories/inMemory/inMemoryOrganizationRepository'
+import { OrganizationNotFoundError } from '@/useCases/errors/organizationNotFoundError'
+import { PetNotFoundError } from '@/useCases/errors/petNotFoundError'
+
+let repository: InMemoryPetRepository
+let organizationsRepository: InMemoryOrganizationRepository
+let sut: FetchByCharacteristicsPetUseCase
+
+describe('Fetch By Characteristics Pet Use Case', () => {
+  beforeEach(() => {
+    repository = new InMemoryPetRepository()
+    organizationsRepository = new InMemoryOrganizationRepository()
+    sut = new FetchByCharacteristicsPetUseCase(
+      organizationsRepository,
+      repository,
+    )
+  })
+  it('Should be able to fetch pets available by city name and others characteristics', async () => {
+    const organization = await organizationsRepository.create({
+      person_responsible: 'John Doe',
+      email: 'johndoe@example.com',
+      password_hash: await hash('123456', 6),
+      address: 'Some address',
+      phone: '1199999999',
+      zip_code: '15789-458',
+      city: 'Some City',
+      state: 'SP',
+    })
+
+    for (let i = 1; i <= 3; i++) {
+      await repository.create({
+        age: 'PUPPY',
+        ambient: 'MEDIUM',
+        description: 'Some description',
+        energy_level: 'AVERAGE',
+        level_of_independence: 'AVERAGE',
+        name: `Some Name ${i}`,
+        organization_id: organization.id,
+        photos: ['SomePhoto.com'],
+        requirements: ['Some requirement'],
+        size: 'MEDIUM',
+      })
+    }
+
+    for (let i = 1; i <= 3; i++) {
+      await repository.create({
+        age: 'PUPPY',
+        ambient: 'MEDIUM',
+        description: 'Some description',
+        energy_level: 'AVERAGE',
+        level_of_independence: 'AVERAGE',
+        name: `Some Name ${i}`,
+        organization_id: organization.id,
+        photos: ['SomePhoto.com'],
+        requirements: ['Some requirement'],
+        size: 'MEDIUM',
+        adopted_at: new Date(),
+      })
+    }
+
+    const { pets } = await sut.execute({
+      city: 'City',
+      age: 'PUPPY',
+    })
+
+    expect(pets).toHaveLength(3)
+    expect(pets[0]).toEqual(expect.objectContaining({ name: 'Some Name 1' }))
+  })
+
+  it('Should not be able to search for pets by city name and others characteristics when there are no registered organizations in the city', async () => {
+    expect(async () => {
+      await sut.execute({ city: 'Wrong city' })
+    }).rejects.toBeInstanceOf(OrganizationNotFoundError)
+  })
+
+  it('Should not be able to search for pets by city name and others characteristics when there are no registered pets for the characteristics', async () => {
+    await organizationsRepository.create({
+      person_responsible: 'John Doe',
+      email: 'johndoe@example.com',
+      password_hash: await hash('123456', 6),
+      address: 'Some address',
+      phone: '1199999999',
+      zip_code: '15789-458',
+      city: 'Some City',
+      state: 'SP',
+    })
+
+    expect(async () => {
+      await sut.execute({ city: 'Some City' })
+    }).rejects.toBeInstanceOf(PetNotFoundError)
+  })
+})

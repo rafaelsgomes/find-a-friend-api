@@ -59,10 +59,11 @@ export class InMemoryPetRepository implements IPetsRepository {
     })
     const pets = petsFiltered.filter((item) => {
       return (
-        item.age === age ||
-        item.energy_level === energy_level ||
-        item.size === size ||
-        item.level_of_independence === level_of_independence
+        (item.age === age ||
+          item.energy_level === energy_level ||
+          item.size === size ||
+          item.level_of_independence === level_of_independence) &&
+        !item.adopted_at
       )
     })
 
