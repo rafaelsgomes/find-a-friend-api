@@ -1,21 +1,21 @@
 import { describe, expect, it, beforeEach } from 'vitest'
-import { CreatePetUseCase } from './create'
+import { SetPetAsAdoptedUseCase } from './setPetAsAdopted'
 import { hash } from 'bcryptjs'
 import { InMemoryPetRepository } from '@/repositories/inMemory/inMemoryPetRepository'
 import { InMemoryOrganizationRepository } from '@/repositories/inMemory/inMemoryOrganizationRepository'
-import { OrganizationNotFoundError } from '@/useCases/errors/organizationNotFoundError'
+import { PetNotFoundError } from '../errors/petNotFoundError'
 
 let repository: InMemoryPetRepository
 let organizationsRepository: InMemoryOrganizationRepository
-let sut: CreatePetUseCase
+let sut: SetPetAsAdoptedUseCase
 
-describe('Create Pet Use Case', () => {
+describe('Set Pet As Adopted Use Case', () => {
   beforeEach(() => {
     repository = new InMemoryPetRepository()
     organizationsRepository = new InMemoryOrganizationRepository()
-    sut = new CreatePetUseCase(organizationsRepository, repository)
+    sut = new SetPetAsAdoptedUseCase(repository)
   })
-  it('Should be able to create a new pet', async () => {
+  it('Should be able to set a pet as adopted', async () => {
     const organization = await organizationsRepository.create({
       person_responsible: 'John Doe',
       email: 'johndoe@example.com',
@@ -27,37 +27,29 @@ describe('Create Pet Use Case', () => {
       state: 'SP',
     })
 
-    const { pet } = await sut.execute({
+    const petCreated = await repository.create({
       age: 'PUPPY',
       ambient: 'MEDIUM',
       description: 'Some description',
       energy_level: 'AVERAGE',
       level_of_independence: 'AVERAGE',
       name: 'Some Name',
-      org_email: organization.email,
-      photos_url: ['SomePhoto.com'],
+      organization_id: organization.id,
+      photos: ['SomePhoto.com'],
       requirements: ['Some requirement'],
       size: 'MEDIUM',
     })
 
-    expect(pet.id).toEqual(expect.any(String))
-    expect(pet.created_at).toEqual(expect.any(Date))
+    const { pet } = await sut.execute({ petId: petCreated.id })
+
+    expect(pet.adopted_at).toEqual(expect.any(Date))
   })
 
-  it('Should not be able to create a pet without a registered organization', async () => {
+  it('Should not be able to set as adopted a pet which is not registered ', async () => {
     expect(() => {
       return sut.execute({
-        age: 'PUPPY',
-        ambient: 'MEDIUM',
-        description: 'Some description',
-        energy_level: 'AVERAGE',
-        level_of_independence: 'AVERAGE',
-        name: 'Some Name',
-        org_email: 'Some organization',
-        photos_url: ['SomePhoto.com'],
-        requirements: ['Some requirement'],
-        size: 'MEDIUM',
+        petId: 'wrong Id',
       })
-    }).rejects.toBeInstanceOf(OrganizationNotFoundError)
+    }).rejects.toBeInstanceOf(PetNotFoundError)
   })
 })
