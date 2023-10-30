@@ -7,6 +7,7 @@
     "@rocketseat/eslint-config": "2.1.0",
     "@types/bcryptjs": "2.4.5",
     "@types/node": "20.8.9",
+    "@types/supertest": "2.0.15",
     "@typescript-eslint/eslint-plugin": "6.4.0",
     "eslint": "8.0.1",
     "eslint-config-standard-with-typescript": "39.1.1",
@@ -14,6 +15,7 @@
     "eslint-plugin-n": "15.0.0 || 16.0.0 ",
     "eslint-plugin-promise": "6.0.0",
     "prisma": "5.5.2",
+    "supertest": "6.3.3",
     "tsup": "7.2.0",
     "tsx": "3.14.0",
     "typescript": "*",
@@ -31,6 +33,11 @@
     "dev": "tsx watch src/server.ts",
     "start": "node build/src.js",
     "build": "tsup src --out-dir build",
-    "test": "vitest run --dir src/useCases"
+    "test": "vitest run --dir src/useCases",
+    "test:create-prisma-env": "npm link ./vitest-environment-prisma",
+    "test:install-prisma-env": "npm link vitest-environment-prisma",
+    "pretest:e2e": "run-s test:create-prisma-env test:install-prisma-env",
+    "test:e2e": "vitest run --dir src/http",
+    "test:e2e:watch": "vitest --dir src/http"
   }
 }
