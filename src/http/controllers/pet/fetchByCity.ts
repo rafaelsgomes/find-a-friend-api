@@ -8,11 +8,11 @@ export async function fetchByCity(
   request: FastifyRequest,
   reply: FastifyReply,
 ) {
-  const fetchByCityOrganizationQuerySchema = z.object({
+  const fetchByCityPetQuerySchema = z.object({
     city: z.string(),
   })
 
-  const { city } = fetchByCityOrganizationQuerySchema.parse(request.query)
+  const { city } = fetchByCityPetQuerySchema.parse(request.query)
 
   try {
     const fetchByCityUseCase = makeFetchByCityPetUseCase()

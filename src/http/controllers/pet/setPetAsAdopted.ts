@@ -4,11 +4,11 @@ import { FastifyReply, FastifyRequest } from 'fastify'
 import { z } from 'zod'
 
 export async function setPetAsAdopted(request: FastifyRequest, reply: FastifyReply) {
-  const createOrganizationParamsSchema = z.object({
+  const createPetParamsSchema = z.object({
     petId: z.string(),
   })
 
-  const { petId } =createOrganizationParamsSchema.parse(request.params)
+  const { petId } = createPetParamsSchema.parse(request.params)
 
   try {
     const setPetAsAdoptedUseCase = makeSetPetAsAdoptedUseCase()

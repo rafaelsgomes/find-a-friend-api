@@ -2,6 +2,7 @@ import request from 'supertest'
 import { app } from '@/app'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { createAndAuthenticateOrganization } from '@/utils/tests/createAndAuthenticateOrganization'
+import { createPet } from '@/utils/tests/createPet'
 describe('Profile (e2e)', () => {
   beforeAll(async () => {
     await app.ready()
@@ -9,17 +10,20 @@ describe('Profile (e2e)', () => {
   afterAll(async () => {
     await app.close()
   })
-  it('Should be able to get user profile', async () => {
+  it('Should be able to get pet profile', async () => {
     const { organization } = await createAndAuthenticateOrganization(app)
 
+    const { pet } = await createPet(organization.id)
+
     const profileResponse = await request(app.server)
-      .get(`/organizations/${organization.id}/profile`)
+      .get(`/pets/${pet.id}/profile`)
       .send()
 
     expect(profileResponse.statusCode).toEqual(200)
-    expect(profileResponse.body.organization).toEqual(
+    expect(profileResponse.body.pet).toEqual(
       expect.objectContaining({
-        email: 'johndoe@example.com',
+        id: expect.any(String),
+        name: 'Some Name',
       }),
     )
   })

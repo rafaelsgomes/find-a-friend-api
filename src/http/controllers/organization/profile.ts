@@ -5,11 +5,11 @@ import { z } from 'zod'
 
 export async function profile(request: FastifyRequest, reply: FastifyReply) {
 try {
-  const createOrganizationParamsSchema = z.object({
+  const getOrganizationProfileParamsSchema = z.object({
     orgId: z.string(),
   })
 
-  const { orgId } =createOrganizationParamsSchema.parse(request.params)
+  const { orgId } = getOrganizationProfileParamsSchema.parse(request.params)
 
   const getOrganizationProfile = makeOrganizationProfileUseCase()
 
@@ -18,7 +18,7 @@ try {
   })
 
   return reply.status(200).send({
-    user: {
+    organization: {
       ...organization,
       password_hash: undefined,
     },
