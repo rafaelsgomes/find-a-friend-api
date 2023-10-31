@@ -85,7 +85,7 @@ export class InMemoryPetRepository implements IPetsRepository {
   }
 
   async update(data: IPetUpdateParams) {
-    const petIndex = this.items.findIndex((item) => item.id === data.petId)
+    const petIndex = this.items.findIndex((item) => item.id === data.id)
 
     const pet = {
       ...this.items[petIndex],

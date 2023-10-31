@@ -51,13 +51,14 @@ export class PrismaPetsRepository implements IPetsRepository {
 
     return pets
   }
-  async update(data: IPetUpdateParams) {
+  async update({IsAdopted, ...rest}: IPetUpdateParams) {
     const pet = await prisma.pet.update({
       where: {
-        id: data.petId
+        id: rest.id
       },
       data: {
-        ...data
+        ...rest,
+        adopted_at: IsAdopted ? new Date() : null
       }
     })
 

@@ -9,7 +9,7 @@ export interface IPetFindParams {
 }
 
 export interface IPetUpdateParams {
-  petId: string
+  id: string
   age?: Age
   energy_level?: Level
   size?: Size

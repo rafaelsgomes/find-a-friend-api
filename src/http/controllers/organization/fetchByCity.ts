@@ -35,7 +35,7 @@ export async function fetchByCity(
       })
   } catch (error) {
     if (error instanceof OrganizationNotFoundError) {
-      return reply.status(400).send({
+      return reply.status(404).send({
         message: error.message,
       })
     }

@@ -23,7 +23,7 @@ export class SetPetAsAdoptedUseCase {
     }
 
     const petUpdate = await this.petsRepository.update({
-      petId,
+      id: petId,
       IsAdopted: true,
     })
 

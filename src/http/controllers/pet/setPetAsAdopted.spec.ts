@@ -2,33 +2,24 @@ import request from 'supertest'
 import { app } from '@/app'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 import { createAndAuthenticateOrganization } from '@/utils/tests/createAndAuthenticateOrganization'
+import { createPet } from '@/utils/tests/createPet'
 
-describe('Create Pet (e2e)', () => {
+describe('Set Pet as Adopted (e2e)', () => {
   beforeAll(async () => {
     await app.ready()
   })
   afterAll(async () => {
     await app.close()
   })
-  it('Should be able to register a new pet', async () => {
+  it('Should be able to set a pet as adopted', async () => {
     const {organization, token} = await createAndAuthenticateOrganization(app)
+    const {pet} = await createPet(organization.id)
 
     const response = await request(app.server)
-    .post('/pets')
+    .patch(`/pets/${pet.id}/adopted`)
     .set('Authorization', `Bearer ${token}`)
-    .send({
-      age: 'PUPPY',
-      ambient: 'MEDIUM',
-      description: 'Some description',
-      energy_level: 'AVERAGE',
-      level_of_independence: 'AVERAGE',
-      name: 'Some Name',
-      orgId: organization.id,
-      photos_url: ['SomePhoto.com'],
-      requirements: ['Some requirement'],
-      size: 'MEDIUM',
-    })
+    .send()
 
-    expect(response.statusCode).toEqual(201)
+    expect(response.statusCode).toEqual(204)
   })
 })
