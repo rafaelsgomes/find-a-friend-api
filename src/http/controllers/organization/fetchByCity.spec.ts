@@ -2,7 +2,7 @@ import request from 'supertest'
 import { app } from '@/app'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
 
-describe('Authenticate (e2e)', () => {
+describe('Fetch By City (e2e)', () => {
   beforeAll(async () => {
     await app.ready()
   })
@@ -21,14 +21,17 @@ describe('Authenticate (e2e)', () => {
       state: 'SP',
     })
 
-    const response = await request(app.server).post('/sessions').send({
-      email: 'johndoe@example.com',
-      password: '123456',
-    })
+    const response = await request(app.server).get('/organizations/').query({
+      city: 'Some'
+    }).send()
 
     expect(response.statusCode).toEqual(200)
-    expect(response.body).toEqual({
-      token: expect.any(String),
-    })
+    expect(response.body.organizations).toHaveLength(1)
+    expect(response.body.organizations).toEqual([
+      expect.objectContaining({
+        id: expect.any(String),
+        person_responsible: 'John Doe'
+      })
+    ])
   })
 })

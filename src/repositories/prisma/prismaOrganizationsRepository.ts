@@ -22,7 +22,7 @@ export class PrismaOrganizationsRepository implements IOrganizationsRepository {
   async findManyByCity(city: string) {
     const organizations = await prisma.organization.findMany({
       where: {
-        city,
+        city: {contains: city},
       },
     })
 
