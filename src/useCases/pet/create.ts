@@ -4,7 +4,7 @@ import { Pet, Age, Size, Level } from '@prisma/client'
 import { OrganizationNotFoundError } from '@/useCases/errors/organizationNotFoundError'
 
 interface CreatePetRequest {
-  org_email: string
+  orgId: string
   age: Age
   ambient: Size
   description: string
@@ -12,8 +12,8 @@ interface CreatePetRequest {
   level_of_independence: Level
   name: string
   size: Size
-  photos_url: string[]
-  requirements: string[]
+  photos_url?: string[]
+  requirements?: string[]
 }
 
 interface CreatePetResponse {
@@ -27,7 +27,7 @@ export class CreatePetUseCase {
   ) {}
 
   async execute({
-    org_email,
+    orgId,
     age,
     ambient,
     description,
@@ -39,7 +39,7 @@ export class CreatePetUseCase {
     requirements,
   }: CreatePetRequest): Promise<CreatePetResponse> {
     const organization =
-      await this.organizationsRepository.findByEmail(org_email)
+      await this.organizationsRepository.findById(orgId)
 
     if (!organization) {
       throw new OrganizationNotFoundError()
