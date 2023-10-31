@@ -10,13 +10,5 @@ export async function organizationsRoutes(app: FastifyInstance) {
   app.post('/sessions', authenticate)
 
   app.get('/organizations/', fetchByCity)
-  
-  /** Authenticate */
-  app.get(
-    '/me',
-    {
-      onRequest: [verifyJWT],
-    },
-    profile,
-  )
+  app.get('/organizations/:orgId/profile',profile)
 }

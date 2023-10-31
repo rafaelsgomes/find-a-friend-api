@@ -6,7 +6,6 @@ import { z } from 'zod'
 
 export async function create(request: FastifyRequest, reply: FastifyReply) {
   const createOrganizationBodySchema = z.object({
-    orgId: z.string(),
     age: z.nativeEnum(Age),
     ambient: z.nativeEnum(Size),
     description: z.string(),
@@ -19,7 +18,6 @@ export async function create(request: FastifyRequest, reply: FastifyReply) {
   })
 
   const { 
-    orgId, 
     age, 
     ambient, 
     description, 
@@ -35,7 +33,7 @@ export async function create(request: FastifyRequest, reply: FastifyReply) {
   try {
     const createUseCase = makeCreateUseCase()
     await createUseCase.execute({
-      orgId, 
+      orgId: request.user.sub, 
       age, 
       ambient, 
       description, 

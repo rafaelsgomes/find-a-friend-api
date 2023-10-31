@@ -10,11 +10,10 @@ describe('Profile (e2e)', () => {
     await app.close()
   })
   it('Should be able to get user profile', async () => {
-    const { token } = await createAndAuthenticateOrganization(app)
+    const { organization } = await createAndAuthenticateOrganization(app)
 
     const profileResponse = await request(app.server)
-      .get('/me')
-      .set('Authorization', `Bearer ${token}`)
+      .get(`/organizations/${organization.id}/profile`)
       .send()
 
     expect(profileResponse.statusCode).toEqual(200)
